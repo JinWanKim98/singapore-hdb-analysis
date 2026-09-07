@@ -2,51 +2,83 @@
 
 ### Overview
 
-This project analyses 216,375 HDB resale transactions in Singapore from January 2017 to September 2025, using Python to explore the factors that move public housing prices — and to check which of those factors survive scrutiny.
+216,375 HDB resale transactions, January 2017 to September 2025, from data.gov.sg.
+
+The project answers four questions a buyer would actually ask:
+
+1. Which towns are the most and least expensive?
+2. Does a higher floor actually cost more?
+3. Is there really a price cliff once the remaining lease drops below 60 years?
+4. Has the gap between towns changed since 2017?
+
+**The first version of this analysis got question 2 wrong**, and fixing it changed how I did
+the rest. That story is in the *Method* section below — it is the part of the project I would
+want to talk about.
 
 ### Technical Implementation
 * ****Language****: Python
 * ****Libraries****: pandas (data manipulation), matplotlib (visualisation)
 * ****Tools****: Jupyter Notebook, Power BI
 
-### Problem Statement
-HDB resale prices vary widely by location, floor level and flat type.
-This project addresses three questions:
-
-1. Which towns have the highest and lowest average resale prices?
-2. How much does floor level actually affect price?
-3. Which areas offer the best value in terms of price per square metre?
-
-### Data & Methodology
-
-* ****Data source****: Singapore Government Open Data (data.gov.sg)
-* ****Dataset****: HDB resale transactions, Jan 2017 – Sep 2025, 216,375 records
-
-* ****Methodology****:
-  1. Cleaned the dataset and ran exploratory data analysis in pandas.
-  2. Calculated and visualised average prices by town, flat type and storey range with matplotlib.
-  3. Engineered a `price_per_sqm` metric to compare value across towns of differing flat sizes.
-  4. Checked each headline comparison against its sample size before reporting it.
-  5. Summarised the results in a Power BI dashboard.
-
 ### Key Findings
 
-* ****Regional price disparity****: Bukit Timah is the most expensive town at an average of $769K, 72% above Yishun ($447K), the cheapest.
-* ****Floor premium — smaller than the raw numbers suggest****: Among 4-room flats, average price per sqm rises from $4,852/sqm at storeys 01–03 to $10,106/sqm at storeys 37–39. Bands above the 40th storey are **excluded from this comparison**: they hold 223 of 91,641 4-room transactions (0.24%), and the highest band's 14 sales all sit in a single town. Those bands measure location, not height. *(The figures above are not yet controlled for town or flat age — see Limitations.)*
-* ****Highest price per sqm****: The Central Area commands $8,166/sqm, followed by Queenstown ($7,497/sqm) and Bukit Merah ($7,191/sqm).
-* ****Highest-priced transaction****: A 5-room Premium Apartment Loft in Queenstown, sold for $1.66M in June 2025.
+**1. Town — a 72% gap between the ends.**
+Bukit Timah averages $769K, Yishun $447K. This one is safe to read at face value.
 
-### Limitations
+**2. Floor — a real premium, but about 15% per 10 floors, not 2.6x.**
+My first version reported that top-floor flats (49–51) cost 2.6 times more than ground-floor
+flats. That figure came from **19 sales out of 216,375, all of them in Central Area**. It was
+measuring the most expensive town in Singapore through a storey label. Holding town, flat
+type and year constant, an extra floor is worth about **$87 per sqm — roughly 15.7% per 10
+floors**. The raw comparison overstates the effect by **53%**.
 
-The comparisons above are unadjusted averages. Town, flat type, flat age and transaction year are correlated with one another, so a difference attributed to one of them may belong to another — the storey figures are the clearest example. A follow-up analysis controlling for these variables is in progress and will replace the headline figures above.
+**3. Remaining lease — no cliff at 60 years.**
+The common view is that prices drop sharply once the lease falls under about 60 years. Among
+4-room flats sold in 2024, the line is flat through that mark, and flats with **45–50 years
+left sell for more per sqm than flats with 60–75 years left**. Holding the town constant, an
+extra lease year is worth **under 1% per sqm** (+0.95% at 45–60 years, +0.41% at 60–75,
++0.79% at 75–95) — and it does not accelerate below 60. The short leases sit in the oldest,
+most central estates, so the town is doing the work again.
+
+**4. Towns are converging.**
+The cheapest towns in 2017 grew the fastest: Sembawang +68%, Woodlands +57%, against Central
+Area +28% and Bishan +28%. The correlation between a town's 2017 price level and its later
+growth is **−0.64**. The ranking barely moved, but the gap between the most and least
+expensive town narrowed from **2.36x to 1.97x**.
+
+### Method
+
+All three of the interesting findings are the same problem: a difference that looks like it
+belongs to one variable actually belongs to the town.
+
+To separate them I compare each sale against the average of its own group (town, flat type
+and year) rather than against the whole dataset, so what is left is the within-group
+difference. It is a simple approach — a regression with all the variables at once would be
+stronger — but it is enough to show that the raw storey and lease numbers are misleading, and
+by how much.
+
+I also check the sample size of every band before reporting an average from it. That is what
+caught the 19-transaction storey band.
 
 ### Visualisations
 
-![Price by Town](images/price_by_town.png)
-![Price per sqm by storey range](images/price_by_floor.png)
-![Summary Statistics](images/summary_table.png)
+![Price by town](images/price_by_town.png)
 
-The results are also assembled in a Power BI dashboard (`SG_HDB_RESALE.pbix` in this repository). GitHub cannot render `.pbix` files, so the images above are the readable version.
+Grey bars below mark storey bands with fewer than 200 sales — the averages there are not
+reliable, which is where the original 2.6x came from:
+
+![Price per sqm by storey range](images/price_by_floor.png)
+
+![Price per sqm by remaining lease](images/price_by_lease.png)
+
+![Growth by town](images/growth_by_town.png)
+
+### Power BI dashboard
+
+![Summary statistics](images/summary_table.png)
+
+The dashboard is in `SG_HDB_RESALE.pbix`. GitHub cannot render `.pbix` files, so the image
+above is the readable version.
 
 ### Repository Structure
 
@@ -54,7 +86,7 @@ The results are also assembled in a Power BI dashboard (`SG_HDB_RESALE.pbix` in 
 singapore-hdb-analysis/
 ├── Singapore_HDB_Analysis.ipynb                                  # Main analysis notebook
 ├── ResaleflatpricesbasedonregistrationdatefromJan2017onwards.csv # Dataset
-├── images/                                                       # Charts
+├── images/                                                       # Charts (generated by the notebook)
 ├── SG_HDB_RESALE.pbix                                            # Power BI file
 └── README.md                                                     # Documentation
 ```
@@ -72,3 +104,15 @@ pip install pandas matplotlib jupyter
 # 3. Run the notebook
 jupyter notebook Singapore_HDB_Analysis.ipynb
 ```
+
+Running the notebook regenerates every chart in `images/`.
+
+### Limitations
+
+- The comparisons hold town, flat type and year constant, but not flat model, block age or
+  distance to an MRT station. Some of what is left may still belong to those.
+- Comparing each sale against its own town / type / year average is a simple way to control
+  for them. A regression with all the variables at once would be a stronger test.
+- 2025 data stops in September, so 2025 is not used in the year-on-year comparison.
+- The dataset records what flats sold for, not what they were listed at, so nothing here says
+  anything about how long a flat takes to sell.
