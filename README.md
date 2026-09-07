@@ -1,66 +1,74 @@
 ## Singapore HDB Resale Price Analysis
 
-### Overview  
-  
-This project provides an in-depth analysis of 216,375 HDB resale transactions in Singapore from 2017 to 2025. By leveraging Python and SQL, it explores key factors influencing public housing prices to help potential buyers make informed decisions.  
+### Overview
+
+This project analyses 216,375 HDB resale transactions in Singapore from January 2017 to September 2025, using Python to explore the factors that move public housing prices — and to check which of those factors survive scrutiny.
 
 ### Technical Implementation
-* ****Languages****: Python, SQL
-* ****Libraries****: pandas (Data Manipulation), matplotlib (Static Visualization), sqlite3 (In-memory Database)
+* ****Language****: Python
+* ****Libraries****: pandas (data manipulation), matplotlib (visualisation)
 * ****Tools****: Jupyter Notebook, Power BI
 
 ### Problem Statement
-HDB resale prices in Singapore vary significantly based on factors like location, floor level, and flat type.   
-This project aims to answer three core questions:
+HDB resale prices vary widely by location, floor level and flat type.
+This project addresses three questions:
 
 1. Which towns have the highest and lowest average resale prices?
-2. How much does the floor level impact the price (the "floor premium")?
-3. Which areas offer the best value in terms of price per square meter?
+2. How much does floor level actually affect price?
+3. Which areas offer the best value in terms of price per square metre?
 
 ### Data & Methodology
 
-* ****Data Source****: Singapore Government's Open Data
-* ****Dataset****: HDB Resale Transactions (Jan 2017 - June 2025), 216,375 records
+* ****Data source****: Singapore Government Open Data (data.gov.sg)
+* ****Dataset****: HDB resale transactions, Jan 2017 – Sep 2025, 216,375 records
 
 * ****Methodology****:
-  1. Cleaned and performed Exploratory Data Analysis (EDA) using Pandas.
-  2. Calculated and visualized average prices by key variables (town, flat type, floor level) with Matplotlib.
-  3. Engineered a price_per_sqm metric to analyze value for money across different towns.
-  4. Validated Python-based findings by running parallel queries in SQL (via SQLite).
-  5. Summarized and presented the key insights in an interactive Power BI dashboard.
- 
+  1. Cleaned the dataset and ran exploratory data analysis in pandas.
+  2. Calculated and visualised average prices by town, flat type and storey range with matplotlib.
+  3. Engineered a `price_per_sqm` metric to compare value across towns of differing flat sizes.
+  4. Checked each headline comparison against its sample size before reporting it.
+  5. Summarised the results in a Power BI dashboard.
+
 ### Key Findings
 
-* ****Regional Price Disparity****: Bukit Timah is the most expensive town with an average price of $769K, which is 72% higher than Yishun ($447K).
-* ****Significant Floor Premium****: Top-floor units (49-51) average $1.23M, making them 2.6 times more expensive than ground-floor units ($471K), confirming that floor level is a major price driver.
-* ****Highest Price Per Sqm****: The Central Area commands the highest price per square meter at $8,166/sqm, followed by Queenstown ($7,497/sqm) and Bukit Merah ($7,191/sqm).
-* ****Highest-Priced Transaction****: The most expensive flat in the dataset was a 5-room loft unit in Queenstown, sold for $1.66M.
+* ****Regional price disparity****: Bukit Timah is the most expensive town at an average of $769K, 72% above Yishun ($447K), the cheapest.
+* ****Floor premium — smaller than the raw numbers suggest****: Among 4-room flats, average price per sqm rises from $4,852/sqm at storeys 01–03 to $10,106/sqm at storeys 37–39. Bands above the 40th storey are **excluded from this comparison**: they hold 223 of 91,641 4-room transactions (0.24%), and the highest band's 14 sales all sit in a single town. Those bands measure location, not height. *(The figures above are not yet controlled for town or flat age — see Limitations.)*
+* ****Highest price per sqm****: The Central Area commands $8,166/sqm, followed by Queenstown ($7,497/sqm) and Bukit Merah ($7,191/sqm).
+* ****Highest-priced transaction****: A 5-room Premium Apartment Loft in Queenstown, sold for $1.66M in June 2025.
 
-### Visualization Dashboard (Power BI)
+### Limitations
+
+The comparisons above are unadjusted averages. Town, flat type, flat age and transaction year are correlated with one another, so a difference attributed to one of them may belong to another — the storey figures are the clearest example. A follow-up analysis controlling for these variables is in progress and will replace the headline figures above.
+
+### Visualisations
 
 ![Price by Town](images/price_by_town.png)
-![Floor Premium Analysis](images/price_by_floor.png)
+![Price per sqm by storey range](images/price_by_floor.png)
 ![Summary Statistics](images/summary_table.png)
 
-[SG_HDB_RESALE - Power BI](https://app.powerbi.com/groups/me/reports/31425555-0594-497b-8f95-94db07df2f21/2567009a889da8942348?experience=power-bi)
+The results are also assembled in a Power BI dashboard (`SG_HDB_RESALE.pbix` in this repository). GitHub cannot render `.pbix` files, so the images above are the readable version.
 
-The final analysis is summarized in an interactive Power BI dashboard. 
+### Repository Structure
 
-### Repository Structure:
-
+```
 singapore-hdb-analysis/
-├── Singapore_HDB_Analysis.ipynb           # Main analysis notebook  
-├── ResaleflatpricesbasedonregistrationdatefromJan2017onwards.csv  # Dataset  
-├── images/                                # Visualization images  
-├── SG_HDB_RESALE.pbix                     # Power BI file  
-└── README.md                              # Documentation  
-  
-### How to Run
-1. Clone the repository
-git clone [repository-url]
+├── Singapore_HDB_Analysis.ipynb                                  # Main analysis notebook
+├── ResaleflatpricesbasedonregistrationdatefromJan2017onwards.csv # Dataset
+├── images/                                                       # Charts
+├── SG_HDB_RESALE.pbix                                            # Power BI file
+└── README.md                                                     # Documentation
+```
 
-2. Install dependencies
+### How to Run
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/JinWanKim98/singapore-hdb-analysis.git
+cd singapore-hdb-analysis
+
+# 2. Install dependencies
 pip install pandas matplotlib jupyter
 
-3. Run Jupyter Notebook
+# 3. Run the notebook
 jupyter notebook Singapore_HDB_Analysis.ipynb
+```
