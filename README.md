@@ -99,8 +99,8 @@ and that is where the 2.6x comes from:
 The dashboard file is `SG_HDB_RESALE.pbix`, exported as `SG_HDB_RESALE.pdf`. GitHub cannot
 render `.pbix`, so the image above is the readable version.
 
-Note that the storey visual in the dashboard shows **unadjusted** averages, which is the
-comparison finding 2 explains away. The controlled version is in the notebook.
+The dashboard covers the town comparison only. The storey and lease questions need the
+group-mean adjustment described under *Method*, which is done in the notebook.
 
 ### Repository Structure
 
