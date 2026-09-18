@@ -1,141 +1,45 @@
-## Singapore HDB Resale Price Analysis
+# Singapore HDB Resale Analysis
 
-### Overview
+An individual exploratory analysis of **216,375 resale transactions from January 2017 to September 2025**, using Python, pandas, matplotlib and a Power BI dashboard. The questions concern town prices, storey height, remaining lease and changes since 2017.
 
-216,375 HDB resale transactions, January 2017 to September 2025, from data.gov.sg.
+## Main findings
 
-The project answers four questions a buyer would actually ask:
+| Question | Observation | How to read it |
+|---|---|---|
+| Which towns cost more? | Bukit Timah has the highest mean total resale price; Yishun the lowest, a roughly 72% difference | These averages include different flat sizes/types and sale years |
+| Does storey height matter? | Within town/year groups of 4-room flats, the slope is about SGD 87 per sqm per floor | A conditional association, with remaining lease and block/location details still uncontrolled |
+| Is there a 60-year lease cliff? | The retained five-year bins do not show an obvious drop at 60 years | Bins and separate slopes cannot rule out or establish a discontinuity |
+| Did town prices converge? | Highest/lowest town ratio falls from 2.36× to 1.97× between 2017 and 2024 | The absolute gap rises from about SGD 4,715 to SGD 5,181 per sqm |
 
-1. Which towns are the most and least expensive?
-2. Does a higher floor actually cost more?
-3. Is there really a price cliff once the remaining lease drops below 60 years?
-4. Has the gap between towns changed since 2017?
+## Checking a misleading comparison
 
-Three of the four turn out to have the same trap in them, which is what the *Method* section
-below is about.
+The highest storey band contains only 19 transactions, all in Central Area. Its raw total-price ratio against the lowest band mixes storey, location and flat type. It cannot be called a floor premium.
 
-### Technical Implementation
-* ****Language****: Python
-* ****Libraries****: pandas (data manipulation), matplotlib (visualisation)
-* ****Tools****: Jupyter Notebook, Power BI
+The follow-up restricts to 4-room flats and demeans both storey midpoint and price per sqm within town/year groups. The raw slope of about SGD 132.8 falls to about SGD 87.0. The raw slope is roughly 53% larger; this is a comparison of like-for-like slopes, separate from the extreme-band ratio. Ten floors at the adjusted slope equal 15.7% of the sample mean price per sqm, not a causal percentage return on a particular flat.
 
-### Key Findings
+![Storey bands and transaction counts](images/price_by_floor.png)
 
-**1. Town — a 72% gap between the ends.**
-Bukit Timah averages $769K, Yishun $447K. This one is safe to read at face value.
+## Lease and town growth
 
-**2. Floor — a real premium, but about 15.7% per 10 floors, not 2.6x.**
-Grouped by storey range, the top band (49–51) averages 2.6 times the bottom band. That band
-holds **19 sales out of 216,375, and all 19 are in one town** — Central Area. It is the most
-expensive town in Singapore showing up under a storey label. Holding town, flat type and year
-constant, an extra floor is worth about **$87 per sqm, or 15.7% per 10 floors**. The
-uncontrolled comparison overstates the effect by **53%**.
+For 2024 4-room sales, the within-town lease slopes are approximately +0.95%, +0.41% and +0.79% of each band's mean price per sqm per additional lease year in the 45–60, 60–75 and 75–95 year bands. These estimates vary. They do not justify the earlier claim that the relationship does not accelerate below 60 years.
 
-**3. Remaining lease — no cliff at 60 years.**
-The common view is that prices drop sharply once the lease falls under about 60 years. Among
-4-room flats sold in 2024, the line is flat through that mark, and flats with **45–50 years
-left sell for more per sqm than flats with 60–75 years left**. Holding the town constant, an
-extra lease year is worth **under 1% per sqm** (+0.95% at 45–60 years, +0.41% at 60–75, +0.79%
-at 75–95), and the effect does not accelerate below 60. The short leases sit in the oldest, most
-central estates, so the town is doing the work again.
+The growth comparison retains 24 towns with at least 50 sales in both 2017 and 2024. Starting price and subsequent percentage growth have a correlation near −0.64. That is a descriptive pattern; starting price also appears in the growth denominator. A lower price ratio and a larger cash gap can occur together.
 
-**4. Towns are converging.**
-The cheapest towns in 2017 grew the fastest: Sembawang +68%, Woodlands +57%, against Central
-Area +28% and Bishan +28%. The correlation between a town's 2017 price level and its later
-growth is **−0.64**. The ranking barely moved, but the gap between the most and least expensive
-town narrowed from **2.36x to 1.97x**.
+![Town price growth](images/growth_by_town.png)
 
-### So what
+## Read and run
 
-Three of these change what a buyer should actually look at.
-
-**Height is worth less than the listings suggest, and only in the right place.** Ten floors is
-worth roughly 16% per sqm once the town is held constant. Paying a large premium for a high
-floor inside an already expensive town means paying for the location twice — the height is
-already in the town price.
-
-**Screening flats by remaining lease alone filters on the wrong variable.** A 45–55 year lease
-is not the discount the "60-year cliff" story implies, because those flats sit in mature central
-estates and are priced up by that. A buyer avoiding short leases on principle is ruling out
-central locations without meaning to.
-
-**If growth matters more than the address, the record points the other way round.** Since 2017
-the cheapest towns grew the fastest and the most expensive grew the slowest.
-
-One caveat on the last point: this describes what has already happened. Eight years of one
-direction is not a forecast, and the towns that grew fastest were also the ones with the most
-room to catch up.
-
-### Method
-
-All three of the interesting findings are the same problem: a difference that looks like it
-belongs to one variable actually belongs to the town.
-
-To separate them I compare each sale against the average of its own group (town, flat type and
-year) rather than against the whole dataset, so what is left is the within-group difference. It
-is a simple approach — a regression with all the variables at once would be stronger — but it is
-enough to show that the raw storey and lease numbers are misleading, and by how much.
-
-I also check the sample size of every band before quoting an average from it. That is what
-caught the 19-transaction storey band.
-
-### Visualisations
-
-![Price by town](images/price_by_town.png)
-
-Grey bars mark storey bands with fewer than 200 sales — the averages there are not reliable,
-and that is where the 2.6x comes from:
-
-![Price per sqm by storey range](images/price_by_floor.png)
-
-![Price per sqm by remaining lease](images/price_by_lease.png)
-
-![Growth by town](images/growth_by_town.png)
-
-### Power BI dashboard
-
-![Power BI dashboard](images/powerbi_dashboard.png)
-
-The dashboard file is `SG_HDB_RESALE.pbix`, exported as `SG_HDB_RESALE.pdf`. GitHub cannot
-render `.pbix`, so the image above is the readable version.
-
-The dashboard covers the town comparison only. The storey and lease questions need the
-group-mean adjustment described under *Method*, which is done in the notebook.
-
-### Repository Structure
-
-```
-singapore-hdb-analysis/
-├── Singapore_HDB_Analysis.ipynb                                  # Main analysis notebook
-├── ResaleflatpricesbasedonregistrationdatefromJan2017onwards.csv # Dataset
-├── images/                                                       # Charts (generated by the notebook)
-├── SG_HDB_RESALE.pbix                                            # Power BI file
-├── SG_HDB_RESALE.pdf                                             # Dashboard export
-└── README.md                                                     # Documentation
-```
-
-### How to Run
+Start with [the notebook](Singapore_HDB_Analysis.ipynb). It contains the calculations, sample counts and charts, including the distinction between relative and absolute gaps. The Power BI files and dashboard image provide a separate visual summary.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/JinWanKim98/singapore-hdb-analysis.git
-cd singapore-hdb-analysis
-
-# 2. Install dependencies
-pip install pandas matplotlib jupyter
-
-# 3. Run the notebook
+pip install -r requirements.txt
 jupyter notebook Singapore_HDB_Analysis.ipynb
 ```
 
-Running the notebook regenerates every chart in `images/`.
+Run from the repository root using the included resale CSV. Data source: [data.gov.sg](https://data.gov.sg/), HDB resale flat prices based on registration date from January 2017 onwards; the repository is a snapshot ending September 2025.
 
-### Limitations
+## Limits and maintenance
 
-- The comparisons hold town, flat type and year constant, but not flat model, block age or
-  distance to an MRT station. Some of what is left may still belong to those.
-- Comparing each sale against its own town / type / year average is a simple way to control for
-  them. A regression with all the variables at once would be a stronger test.
-- 2025 data stops in September, so 2025 is not used in the year-on-year comparison.
-- The dataset records what flats sold for, not what they were listed at, so nothing here says
-  anything about how long a flat takes to sell.
+Controls differ by section. Town summaries are descriptive; storey analysis compares 4-room flats within town/year; lease analysis uses 2024 4-room sales within towns. Flat model, block characteristics and MRT distance are not modelled, and uncertainty intervals are not estimated. Demeaning is a within-group regression calculation, not a substitute for all relevant covariates.
+
+2025 is incomplete and excluded from the growth comparison. These are sale prices, with no listing prices or time-to-sale measures. The results do not establish causal premiums, recommend purchases or forecast returns. Portfolio maintenance corrected overstatements in the lease and storey interpretation and added the absolute town gap alongside the ratio.
