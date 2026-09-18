@@ -2,6 +2,10 @@
 
 An individual exploratory analysis of **216,375 resale transactions from January 2017 to September 2025**, using Python, pandas, matplotlib and a Power BI dashboard. The questions concern town prices, storey height, remaining lease and changes since 2017.
 
+## Tech stack
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white) ![pandas](https://img.shields.io/badge/pandas-150458?style=flat&logo=pandas&logoColor=white) ![matplotlib](https://img.shields.io/badge/matplotlib-11557C?style=flat) ![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=flat)
+
 ## Main findings
 
 | Question | Observation | How to read it |
