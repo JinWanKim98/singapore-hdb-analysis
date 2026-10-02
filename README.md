@@ -25,7 +25,7 @@ The follow-up restricts to 4-room flats and demeans both storey midpoint and pri
 
 ## Lease and town growth
 
-For 2024 4-room sales, the within-town lease slopes are approximately +0.95%, +0.41% and +0.79% of each band's mean price per sqm per additional lease year in the 45–60, 60–75 and 75–95 year bands. These estimates vary. They do not justify the earlier claim that the relationship does not accelerate below 60 years.
+For 2024 4-room sales, the within-town lease slopes are approximately +0.95%, +0.41% and +0.79% of each band's mean price per sqm per additional lease year in the 45–60, 60–75 and 75–95 year bands. These estimates vary, so they cannot establish whether the relationship accelerates below 60 years.
 
 The growth comparison retains 24 towns with at least 50 sales in both 2017 and 2024. Starting price and subsequent percentage growth have a correlation near −0.64. That is a descriptive pattern; starting price also appears in the growth denominator. A lower price ratio and a larger cash gap can occur together.
 
@@ -46,4 +46,4 @@ Run from the repository root using the included resale CSV. Data source: [data.g
 
 Controls differ by section. Town summaries are descriptive; storey analysis compares 4-room flats within town/year; lease analysis uses 2024 4-room sales within towns. Flat model, block characteristics and MRT distance are not modelled, and uncertainty intervals are not estimated. Demeaning is a within-group regression calculation, not a substitute for all relevant covariates.
 
-2025 is incomplete and excluded from the growth comparison. These are sale prices, with no listing prices or time-to-sale measures. The results do not establish causal premiums, recommend purchases or forecast returns. Portfolio maintenance corrected overstatements in the lease and storey interpretation and added the absolute town gap alongside the ratio.
+2025 is incomplete and excluded from the growth comparison. These are sale prices, with no listing prices or time-to-sale measures. The results do not establish causal premiums, recommend purchases or forecast returns.
